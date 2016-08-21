@@ -1,18 +1,51 @@
+import java.util.Arrays;
+
 /**
  * Created by Irina on 13.08.2016.
  */
 public class SearchingWords {
-    static  void KMP (char[] haystack, char[] needle) {
-        int m = needle.length; //шаблон поиска
-        int n = haystack.length; //строка, в которой ведётся поиск
-        int[] pf = new int[m]; pf[0] = -1; //Вычисление префикс-функции
-        for(int i = 1; i < m; i ++) {
-            pf[i] = pf[i - 1] + 1;
-            while(pf[i] > 0 && needle[i - 1] != needle[pf[i] - 1]) pf[i] = pf[pf[i] - 1] + 1;}//Сопоставление образца
-        for(int i = 0, j = 0; i < n; i ++) {
-            while(j > 0 && needle[j] != haystack[i]) j = pf[j]; if(needle[j] == haystack[i]) j ++; if(j == m) {//Образец обнаружен на сдвиге i - m + 1 //Ищем следующее вхождение образца
-                j = pf[j]; 
+    public static int[] indexesOf(char[] pattern, char[] text) {
+        int[] pfl = pfl(pattern);
+        int[] indexes = new int[text.length];
+        int size = 0;
+        int k = 0;
+        for(int i = 0; i < text.length; ++i) {
+            while(pattern[k] != text[i] && k > 0) {
+                k = pfl[k - 1];
+            }
+            if(pattern[k] == text[i]) {
+                k = k + 1;
+                if(k == pattern.length) {
+                    indexes[size] = i + 1 - k;
+                    size += 1;
+                    k = pfl[k - 1];
+                }
+            } else {
+                k = 0;
             }
         }
+            if (size > 0) {
+                System.out.println("Искомая фраза найдена. Количество вхождений: " + size);
+            } else {
+                System.out.println("Искомая фраза не найдена!");
+            }
+        return Arrays.copyOfRange(indexes, 0, size);
+}
+
+    public static int[] pfl(char[] text) {
+        int[] pfl = new int[text.length];
+        pfl[0] = 0;
+        for(int i = 1; i < text.length; ++i) {
+            int k = pfl[i - 1];
+            while(text[k] != text[i] && k > 0) {
+                k = pfl[k - 1];
+            }
+            if(text[k] == text[i]) {
+                pfl[i] = k + 1;
+            } else {
+                pfl[i] = 0;
+            }
+        }
+        return pfl;
     }
 }

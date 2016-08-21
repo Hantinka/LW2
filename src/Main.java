@@ -11,6 +11,6 @@ public class Main {
         charsReadindText = readingText.toCharArray();
         char [] charsFindText;
         charsFindText = findText.toCharArray();
-        SearchingWords.KMP(charsReadindText,charsFindText);
+        SearchingWords.indexesOf(charsFindText,charsReadindText);
     }
 }
